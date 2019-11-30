@@ -1,5 +1,0 @@
-java -jar dist\sito.jar command [params]
-Supported commands:
-- "help": shows this message 
-- "config": shows current config 
-    
