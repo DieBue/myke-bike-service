@@ -1,0 +1,21 @@
+{
+	"name": "Default Product Page",
+	"segment": "Default Product Page",
+	"hideFromNavigation": true,
+	"contentId": "6188e436-5df0-4798-805e-ff2bf7bc9247",
+	"description": "",
+	"title": "",
+	"layoutId": "standard-page-layout",
+	"classification": "page",
+	"lastModified": "2018-06-19T18:54:54.782Z",
+	"lastModifierId": "00000000-0000-0000-0000-000000000005",
+	"created": "2018-06-19T18:54:54.782Z",
+	"creatorId": "00000000-0000-0000-0000-000000000005",
+	"contentTypeId": "2af1d22a-fecf-41e1-a808-7301cb37b79f",
+	"contentStatus": "ready",
+	"route": "/Default%20Product%20Page",
+	"children": [],
+	"position": 14,
+	"id": "The28531f8a-920e-47f9-bd34-0dc31363137b-product",
+	"rev": "1-3410be2dd1bfcc2c707322843395887b"
+}

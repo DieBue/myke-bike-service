@@ -1,0 +1,12 @@
+{
+  "numFound" : 12,
+  "documents" : [ {
+    "id" : "898ba2e5-0ccb-4616-804b-1570c3ffd820",
+    "classification": "product",
+    "name" : "Design articles"
+  }, {
+    "id" : "ba8282c2-2f66-48a3-a978-4eb250f91e3a",
+    "classification": {},
+    "name" : "invalid format for classification"
+  }]
+}

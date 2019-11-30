@@ -1,0 +1,8 @@
+listItemSelection=items
+property.classification="video"
+property.content-type="mytype"
+property.id=id
+property.name=snippet.title
+property.description=snippet.description
+element.defaultThumbnailUrl=snippet.thumbnails.default.url
+element.defaultThumbnailWidth=snippet.thumbnails.default.width

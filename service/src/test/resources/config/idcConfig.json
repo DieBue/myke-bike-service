@@ -1,0 +1,23 @@
+{
+	"defaults": {
+		"category": "KitDefaultPage",
+		"product": "KitDefaultPage",
+		"sku": "KitDefaultPage",
+		"bundle": "KitDefaultPage",
+		"kit": "KitDefaultPage",
+		"categorywithproducts": "CategoryProductsDefaultPage"
+	},
+	"categoryOverrides": {
+		"Apparel": {
+			"category": "CategoryDefaultPage",
+			"product": "CategoryDefaultPage",
+			"sku": "CategoryDefaultPage"
+		},
+		" Electronics ": {
+			"category": "ProductDefaultPage"
+		}
+	},
+	"itemOverrides": {
+		"Ant Chair": "Ant Chair Product Page"
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"name": "Default Bundle Page",
+	"segment": "Default Bundle Page",
+	"hideFromNavigation": true,
+	"contentId": "bundle-product",
+	"description": "",
+	"title": "",
+	"layoutId": "standard-page-layout",
+	"classification": "page",
+	"lastModified": "2018-06-19T18:55:07.616Z",
+	"lastModifierId": "00000000-0000-0000-0000-000000000005",
+	"created": "2018-06-19T18:55:07.616Z",
+	"creatorId": "00000000-0000-0000-0000-000000000005",
+	"contentTypeId": "2af1d22a-fecf-41e1-a808-7301cb37b79f",
+	"contentStatus": "ready",
+	"route": "/Default%20Bundle%20Page",
+	"children": [],
+	"position": 17,
+	"id": "The28531f8a-920e-47f9-bd34-0dc31363137b-bundle",
+	"rev": "1-5ad8d826de4061c11f7e7e9c1cefae6c"
+}

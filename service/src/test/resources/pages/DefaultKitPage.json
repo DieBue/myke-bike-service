@@ -1,0 +1,21 @@
+{
+	"name": "Default Kit Page",
+	"segment": "Default Kit Page",
+	"hideFromNavigation": true,
+	"contentId": "6188e436-5df0-4798-805e-ff2bf7bc9247",
+	"description": "",
+	"title": "",
+	"layoutId": "standard-page-layout",
+	"classification": "page",
+	"lastModified": "2018-06-19T18:55:03.439Z",
+	"lastModifierId": "00000000-0000-0000-0000-000000000005",
+	"created": "2018-06-19T18:55:03.439Z",
+	"creatorId": "00000000-0000-0000-0000-000000000005",
+	"contentTypeId": "2af1d22a-fecf-41e1-a808-7301cb37b79f",
+	"contentStatus": "ready",
+	"route": "/Default%20Kit%20Page",
+	"children": [],
+	"position": 16,
+	"id": "The28531f8a-920e-47f9-bd34-0dc31363137b-kit",
+	"rev": "1-3e7c11fd587059286e61d2d938f5cbd2"
+}

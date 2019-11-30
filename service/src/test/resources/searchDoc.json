@@ -1,0 +1,34 @@
+{
+  "numFound" : 12,
+  "documents" : [ {
+    "id" : "898ba2e5-0ccb-4616-804b-1570c3ffd820",
+    "name" : "Design articles"
+  }, {
+    "id" : "ba8282c2-2f66-48a3-a978-4eb250f91e3a",
+    "name" : "About us"
+  }, {
+    "id" : "a2594a36-7ddb-4305-9ffb-29aa106ac0e8",
+    "name" : "Events"
+  }, {
+    "id" : "8d73b043-9eb9-4b19-a4e9-ebaecdf3e23d",
+    "name" : "Maximizing space"
+  }, {
+    "id" : "6e4a712e-397d-4209-a254-4b65f3c67171",
+    "name" : "Clean design"
+  }, {
+    "id" : "4264f80e-9967-4f6b-8e29-60237c4f85e4",
+    "name" : "Home"
+  }, {
+    "id" : "94861421-1c31-4d0e-a213-1754e865ca17",
+    "name" : "Search Results"
+  }, {
+    "id" : "5bc42f14-007a-4d2a-96b0-d2b4ee062678",
+    "name" : "Oversized statement pieces"
+  }, {
+    "id" : "f89c1a9d-cc8c-4e46-83b0-e7c9144784db",
+    "name" : "Mid-century staples"
+  }, {
+    "id" : "15c8add2-ed31-49ec-999c-0378fe1ce92f",
+    "name" : "Modern textures"
+  } ]
+}
