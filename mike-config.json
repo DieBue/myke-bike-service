@@ -1,0 +1,6 @@
+{
+	"host": "your host",
+	"tenantId": "your tenant id",
+	"apiKey": "your API key",
+	"serverPort": 3001
+}
