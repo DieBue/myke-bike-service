@@ -48,7 +48,7 @@ public class TestService {
 
 	@Test
 	public void testBikes() throws TestException, IOException, SAXException {
-		JsonObject bikes = HttpUnitTestHelper.getUrlAsJsonObject(baseURL + "/api/bikes", 200);
+		JsonObject bikes = HttpUnitTestHelper.getUrlAsJsonObject(baseURL + "/api/bikes/by_user?user_id=Dieter", 200);
 		Assert.assertNotNull(bikes);
 		JsonArray ar = bikes.getJsonArray(BikeSchema.BikeList.PROP_ITEMS);
 		Assert.assertTrue(ar.size()>0);
@@ -61,7 +61,7 @@ public class TestService {
 	public void testBike() throws TestException, IOException, SAXException {
 		JsonObject bike = HttpUnitTestHelper.getUrlAsJsonObject(baseURL + "/api/bikes/be6e1fa8-fc02-47e4-993c-e259525cd474", 200);
 		Assert.assertNotNull(bike);
-		Assert.assertEquals("Bike Number 1", bike.getString(BikeSchema.Bike.PROP_NAME));
+		Assert.assertEquals("Bike 1", bike.getString(BikeSchema.Bike.PROP_NAME));
 		Assert.assertTrue(Arrays.asList(new String[] {"FREE", "BOOKED"}).contains(bike.getString(BikeSchema.Bike.PROP_STATUS)));
 	}
 
@@ -98,11 +98,4 @@ public class TestService {
 		
 		Assert.assertEquals(newStatus, updatedBike.getString(BikeSchema.Bike.PROP_STATUS));
 	}
-
-	//@Test
-	public void testNonexistingAPI() throws TestException, IOException, SAXException {
-		HttpUnitTestHelper.getUrlAsJsonObject(baseURL + "/api/foo", 404);
-	}
-
-
 }

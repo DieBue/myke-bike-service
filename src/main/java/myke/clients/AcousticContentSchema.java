@@ -5,6 +5,7 @@ public class AcousticContentSchema {
 		public static final String FIELD_QUERY = "q";
 		public static final String FIELD_FILTER = "fq";
 		public static final String FIELD_FORMAT = "fl";
+		public static final String FIELD_SEED = "ts";
 		public static final String VALUE_FORMAT_DOCUMENT = "document:[json]";
 	}
 

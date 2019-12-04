@@ -1,6 +1,8 @@
 package myke;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,8 +11,8 @@ import org.apache.logging.log4j.Logger;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
-import io.vertx.core.MultiMap;
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
@@ -18,14 +20,18 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.CorsHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import myke.beans.bikes.Bike;
 import myke.beans.bikes.BikeController;
 import myke.beans.bikes.BikeList;
 import myke.beans.common.JsonBean;
 import myke.clients.AcousticContentClient;
+import myke.clients.AcousticContentSchema;
 import myke.exceptions.HttpStatusProvider;
 import myke.exceptions.JsonMessageProvider;
+import myke.exceptions.MissingParameterException;
+import myke.exceptions.ParamValueMissmatchException;
 
 @SuppressWarnings("deprecation")
 public class Service extends AbstractVerticle {
@@ -35,9 +41,9 @@ public class Service extends AbstractVerticle {
 	private static final String PARAM_BIKE_ID = "bike_id";
 
 	private static final String ROUTE_API_DOC = "/*";
-	private static final String ROUTE_GET_BIKES = "/api/bikes";
+	private static final String ROUTE_GET_BIKES_BY_USER = "/api/bikes/by_user";
 	private static final String ROUTE_GET_BIKE = "/api/bikes/:" + PARAM_BIKE_ID;
-	private static final String ROUTE_PUT_BIKES = "/api/bikes/:" + PARAM_BIKE_ID;
+	private static final String ROUTE_PUT_BIKE = "/api/bikes/:" + PARAM_BIKE_ID;
 
 
 	private AcousticContentClient client;
@@ -62,10 +68,11 @@ public class Service extends AbstractVerticle {
 		HttpServer server = vertx.createHttpServer();
 		final Router router = Router.router(vertx);
 
-		router.get(ROUTE_GET_BIKES).handler(this::handleGetBikes);
+		router.route().handler(getCorsHandler());
+		router.get(ROUTE_GET_BIKES_BY_USER).handler(this::handleGetBikesByUser);
 		router.get(ROUTE_GET_BIKE).handler(this::handleGetBike);
-		router.put(ROUTE_PUT_BIKES).handler(BodyHandler.create());
-		router.put(ROUTE_PUT_BIKES).handler(this::handlePutBike);
+		router.put(ROUTE_PUT_BIKE).handler(BodyHandler.create());
+		router.put(ROUTE_PUT_BIKE).handler(this::handlePutBike);
 		router.route(ROUTE_API_DOC).handler(StaticHandler.create());
 //		router.route("/*").handler(this::handleUnknown);
 		server.requestHandler(router::accept);
@@ -88,22 +95,12 @@ public class Service extends AbstractVerticle {
 		LOGGER.traceExit();
 	}
 
-	private void handleUnknown(RoutingContext ctx) {
+	private void handleGetBikesByUser(RoutingContext ctx) {
 		LOGGER.traceEntry();
 		HttpServerResponse response = ctx.response();
-		response.setStatusCode(404);
-		response.putHeader("content-type", "application/json");
-		response.end(new JsonObject().put("message", "API not found.").encode());
-		LOGGER.traceExit();
-	}
-
-	private void handleGetBikes(RoutingContext ctx) {
-		LOGGER.traceEntry();
-		HttpServerResponse response = ctx.response();
-		HttpServerRequest request = ctx.request();
-		String userId = request.params().get(PARAM_USER_ID);
 		try {
-			CompletableFuture<BikeList> bikeListFuture = (userId == null) ? bikeController.getFreeBikes() : bikeController.getMyBikes(userId);
+			String userId = validateParam(ctx, PARAM_USER_ID);
+			CompletableFuture<BikeList> bikeListFuture = bikeController.getMyBikes(userId);
 			bikeListFuture.whenComplete((bikeList, th) -> {
 				if (th != null) {
 					sendError(response, th);
@@ -141,12 +138,12 @@ public class Service extends AbstractVerticle {
 	private void handlePutBike(RoutingContext ctx) {
 		LOGGER.traceEntry();
 		HttpServerResponse response = ctx.response();
-		HttpServerRequest request = ctx.request();
-		String bikeId = request.params().get(PARAM_BIKE_ID);
-		JsonObject bike = ctx.getBodyAsJson();
-		LOGGER.trace("Posted body: " + bike.encode());
 		
 		try {
+			String bikeId = validateParam(ctx, PARAM_BIKE_ID);
+			JsonObject bike = ctx.getBodyAsJson();
+			validateParamValue(bikeId, bike.getString(AcousticContentSchema.Content.PROP_ID));
+			LOGGER.trace("Posted body: " + bike.encode());
 			CompletableFuture<Bike> bikeFuture = bikeController.updateBike(new Bike(bike));
 			bikeFuture.whenComplete((updatedBike, th) -> {
 				if (th != null) {
@@ -159,6 +156,39 @@ public class Service extends AbstractVerticle {
 			sendError(response, e);
 		}
 		LOGGER.traceExit();
+	}
+	
+	private String validateParam(RoutingContext ctx, String key) throws MissingParameterException {
+		String result = ctx.request().params().get(key);
+		if (result == null) {
+			throw new MissingParameterException(key);
+		}
+		return result;
+	}
+
+	private void validateParamValue(String actual, String expected) throws ParamValueMissmatchException {
+		if (!expected.equals(actual)) {
+			throw new ParamValueMissmatchException(expected, actual);
+		}
+	}
+
+	private CorsHandler getCorsHandler() {
+		Set<String> allowedHeaders = new HashSet<>();
+	    allowedHeaders.add("x-requested-with");
+	    allowedHeaders.add("Access-Control-Allow-Origin");
+	    allowedHeaders.add("Access-Control-Allow-Method");
+	    allowedHeaders.add("Access-Control-Allow-Credentials");
+	    allowedHeaders.add("Access-Control-Allow-Origin");
+	    allowedHeaders.add("origin");
+	    allowedHeaders.add("Content-Type");
+	    allowedHeaders.add("accept");
+
+	    Set<HttpMethod> allowedMethods = new HashSet<>();
+	    allowedMethods.add(HttpMethod.GET);
+	    allowedMethods.add(HttpMethod.PUT);
+	    allowedMethods.add(HttpMethod.OPTIONS);
+
+	    return CorsHandler.create(".*").allowedHeaders(allowedHeaders).allowedMethods(allowedMethods);
 	}
 
 	private void sendJsonBean(HttpServerResponse response, JsonBean bean) {

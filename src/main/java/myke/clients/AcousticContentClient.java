@@ -16,7 +16,6 @@ import myke.exceptions.RequestGenerationException;
 public class AcousticContentClient extends HttpClient {
 	private static final Logger LOGGER = LogManager.getLogger(AcousticContentClient.class);
 
-	private static final String ROUTE_LOGIN = "/login/v1/basicauth";
 	private static final String ROUTE_DELIVERY_SEARCH = "/delivery/v1/search";
 	private static final String ROUTE_AUTHORING_CONTENT = "/authoring/v1/content";
 	public static final String HEADER_AUTHORIZATION = "Authorization";

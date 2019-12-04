@@ -2,12 +2,11 @@ package myke.beans.bikes;
 
 import java.text.MessageFormat;
 import java.util.concurrent.CompletableFuture;
-import static myke.clients.AcousticContentSchema.Search;
 
 import io.vertx.core.Vertx;
 import myke.beans.bikes.Bike.Status;
 import myke.clients.AcousticContentClient;
-import myke.clients.AcousticContentSchema.Content;
+import myke.clients.AcousticContentSchema.Search;
 
 public class BikeController {
 	
@@ -34,7 +33,7 @@ public class BikeController {
 	}
 
 	private CompletableFuture<BikeList> getBikes(String query) {
-		return client.search(Search.FIELD_QUERY, query, Search.FIELD_FORMAT, Search.VALUE_FORMAT_DOCUMENT).thenCompose(BikeTransformer::toBikeList);
+		return client.search(Search.FIELD_QUERY, query, Search.FIELD_FORMAT, Search.VALUE_FORMAT_DOCUMENT, Search.FIELD_SEED, Long.toString(System.currentTimeMillis())).thenCompose(BikeTransformer::toBikeList);
 	}
 	
 	public CompletableFuture<Bike> updateBike(Bike newBike) {
