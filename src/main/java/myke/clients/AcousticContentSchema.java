@@ -12,6 +12,7 @@ public class AcousticContentSchema {
 	public static final class SearchResult {
 		public static final String PROP_DOCUMENTS = "documents";
 		public static final String PROP_DOCUMENT = "document";
+		public static final String PROP_NUM_FOUND = "numFound";
 	}
 
 	public static final class Content {

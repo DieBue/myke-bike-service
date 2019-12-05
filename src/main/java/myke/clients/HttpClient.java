@@ -54,7 +54,7 @@ public class HttpClient {
 		CompletableFuture<JsonObject> result = new CompletableFuture<>();
 		HttpRequest<JsonObject> request = client.get(443, config.getHost(), url.toString())
 		.as(BodyCodec.jsonObject())
-		.expect(ResponsePredicate.SC_SUCCESS);
+		.expect(SUCCESS);
 		if (headerName != null) {
 			request.putHeader(headerName, headerValue);
 		}
@@ -96,25 +96,4 @@ public class HttpClient {
 		});
 		return result;
 	}
-
-//	protected CompletableFuture<JsonObject> postWithHeader(URI url, String headerName, String headerValue) {
-//		LOGGER.debug("url: {}, config: {}", url, config);
-//		CompletableFuture<JsonObject> result = new CompletableFuture<>();
-//		client.post(443, config.getHost(), url.toString())
-//		//.expect(ResponsePredicate.SC_SUCCESS)
-//		.putHeader(headerName, headerValue)
-//		.send(asyncResult -> {
-//			if (asyncResult.succeeded()) {
-//				HttpResponse<Buffer> response = asyncResult.result();
-//				LOGGER.trace("POST {} succeeded. Buffer: {}", url, response.bodyAsBuffer());
-//				result.complete(new JsonObject());
-//			}
-//			else {
-//				LOGGER.trace("Buffer: {}", asyncResult.result().bodyAsBuffer());
-//				LOGGER.error("Request failed", asyncResult.cause());
-//				result.completeExceptionally(asyncResult.cause());
-//			}
-//		});
-//		return result;
-//	}
 }

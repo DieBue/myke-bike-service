@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,7 +65,6 @@ public class Service extends AbstractVerticle {
 
 	public void start(Future<Void> startFuture) {
 		LOGGER.traceEntry();
-		//HttpServerOptions options = new HttpServerOptions().setSsl(true);
 		HttpServer server = vertx.createHttpServer();
 		final Router router = Router.router(vertx);
 
@@ -74,7 +74,6 @@ public class Service extends AbstractVerticle {
 		router.put(ROUTE_PUT_BIKE).handler(BodyHandler.create());
 		router.put(ROUTE_PUT_BIKE).handler(this::handlePutBike);
 		router.route(ROUTE_API_DOC).handler(StaticHandler.create());
-//		router.route("/*").handler(this::handleUnknown);
 		server.requestHandler(router::accept);
 		server.listen(config.getServerPort(), res -> {
 			if (res.succeeded()) {
@@ -199,8 +198,9 @@ public class Service extends AbstractVerticle {
 
 	private void sendError(HttpServerResponse response, Throwable th) {
 		LOGGER.catching(th);
-		int status = (th instanceof HttpStatusProvider) ? ((HttpStatusProvider)th).getStatusCode() : 500;
-		JsonObject jsonMessage = (th instanceof JsonMessageProvider) ? ((JsonMessageProvider)th).getJsonMessage() : null;
+		Throwable cause = (th instanceof CompletionException) ? th.getCause() : th; 
+		int status = (cause instanceof HttpStatusProvider) ? ((HttpStatusProvider)cause).getStatusCode() : 500;
+		JsonObject jsonMessage = (cause instanceof JsonMessageProvider) ? ((JsonMessageProvider)cause).getJsonMessage() : null;
 		response.setStatusCode(status);
 		if (jsonMessage != null) {
 			response.headers().add("Content-Type", "application/json");
@@ -208,7 +208,7 @@ public class Service extends AbstractVerticle {
 		}
 		else {
 			response.headers().add("Content-Type", "text/plain");
-			response.end(th.getMessage());
+			response.end(cause.getMessage());
 		}
 	}
 }
