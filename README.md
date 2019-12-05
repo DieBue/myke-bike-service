@@ -23,7 +23,7 @@ Myke also provides a react UI that you will find here: https://github.com/DieBue
 	* This will start the server. You should get a `Service ready. Listening on port: 3001` message at the end. 
    
 ## Try the server
-When the server is running, you should see the REST API documentation being served at `http://localhost:3001/swagger/`. You can invoke the APIs using the
+When the server is running, you should see the REST API documentation being served at http://localhost:3001/swagger/. You can invoke the APIs using the
 `Try it out` button as usual.
 The test cases can be executed either using `gradlew test`. 
 
