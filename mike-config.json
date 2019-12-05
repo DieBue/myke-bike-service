@@ -1,6 +1,6 @@
 {
-	"host": "your host",
-	"tenantId": "your tenant id",
+	"host":"my5.digitalexperience.ibm.com",
+	"tenantId": "59880666-2d91-4939-a082-dd737400f19a",
 	"apiKey": "your API key",
 	"serverPort": 3001
 }
