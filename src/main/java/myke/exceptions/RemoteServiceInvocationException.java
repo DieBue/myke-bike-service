@@ -4,9 +4,6 @@ import io.vertx.core.json.JsonObject;
 
 public class RemoteServiceInvocationException extends HttpJsonException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	

@@ -9,6 +9,13 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 
+/**
+ * Loads the {@link Config} and deploys the {@link Service}. Vertx will automatically start the service.
+ * @see Config  
+ * @see Service  
+ * @author DieterBuehler
+ *
+ */
 public class Main {
 	public static void main(final String[] args) throws IOException {
 		Config config = new Config();

@@ -1,5 +1,10 @@
 package myke.clients;
 
+/**
+ * Maps the Acoustic Content JSON Schema to Java Strings
+ * @author DieterBuehler
+ *
+ */
 public class AcousticContentSchema {
 	public static final class Search {
 		public static final String FIELD_QUERY = "q";

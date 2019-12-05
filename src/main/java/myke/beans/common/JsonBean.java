@@ -2,6 +2,13 @@ package myke.beans.common;
 
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Simple JSON bean that avoids unnecessary serialization/deserialization of JSON data in purely 
+ * JSON based systems.
+ * 
+ * @author DieterBuehler
+ *
+ */
 public class JsonBean {
 	
 	protected final JsonObject json;
@@ -18,6 +25,11 @@ public class JsonBean {
 		return json.encode();
 	}
 	
+	/**
+	 * Simple generic getter
+	 * @param key
+	 * @return
+	 */
     @SuppressWarnings("unchecked")
 	public <T> T get(final String key) {
     	return (T)json.getValue(key);

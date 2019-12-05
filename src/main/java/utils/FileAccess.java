@@ -11,14 +11,19 @@ import org.apache.commons.io.IOUtils;
 import io.vertx.core.json.JsonObject;
 import myke.Main;
 
+/**
+ * Simple helper to read JSON files from the file system or the current classpath.
+ * @author DieterBuehler
+ *
+ */
 public class FileAccess {
-	public static JsonObject readJsonFromClasspath(String personalizationDataFileName) throws IOException {
-		return new JsonObject(readFromClasspath(personalizationDataFileName));
+	public static JsonObject readJsonFromClasspath(String fileName) throws IOException {
+		return new JsonObject(readFromClasspath(fileName));
 	}
 
-	public static String readFromClasspath(String personalizationDataFileName) throws IOException {
+	public static String readFromClasspath(String fileName) throws IOException {
 		StringWriter writer = new StringWriter();
-		InputStream is = Main.class.getResourceAsStream(personalizationDataFileName);
+		InputStream is = Main.class.getResourceAsStream(fileName);
 		IOUtils.copy(is, writer, "UTF-8");
 		return writer.toString();
 	}

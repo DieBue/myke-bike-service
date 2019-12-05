@@ -6,6 +6,12 @@ import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.predicate.ErrorConverter;
 import myke.exceptions.RemoteServiceInvocationException;
 
+/**
+ * This converter is automatically invoked on all failed requests. It captures the JSON error message and HTTP status code provided by the failed response.
+ * 
+ * @author DieterBuehler
+ *
+ */
 public class DefaultErrorConverter {
 	public static ErrorConverter INSTANCE = ErrorConverter.createFullBody(result -> {
 

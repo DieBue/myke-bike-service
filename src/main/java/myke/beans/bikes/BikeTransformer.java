@@ -12,16 +12,36 @@ import myke.clients.AcousticContentSchema.SearchResult;
 import myke.exceptions.JsonAccessException;
 import utils.JsonUtils;
 
+
+/**
+ * This class implements the mapping logic between the JSON schema use by Acoustic Content and the Myke Service.
+ * 
+ * @author DieterBuehler
+ *
+ */
 public class BikeTransformer {
 	private static final Logger LOGGER = LogManager.getLogger(BikeTransformer.class);
 	
-	public static final String[] ACCESSOR_NAME = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_NAME, Content.PROP_VALUE};
-	public static final String[] ACCESSOR_OWNER = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_OWNER, Content.PROP_VALUE};
-	public static final String[] ACCESSOR_STATUS = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_STATUS, Content.PROP_VALUE, Content.PROP_SELECTION};
-	public static final String[] ACCESSOR_LATITUDE = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_LOCATION, Content.PROP_LATITUDE};
-	public static final String[] ACCESSOR_LONGITUDE = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_LOCATION, Content.PROP_LONGITUDE};
+	// Acoustic Content accessor for the name element value
+	private static final String[] ACCESSOR_NAME = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_NAME, Content.PROP_VALUE};
+
+	// Acoustic Content accessor for the owner element value
+	private static final String[] ACCESSOR_OWNER = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_OWNER, Content.PROP_VALUE};
+
+	// Acoustic Content accessor for the status element value
+	private static final String[] ACCESSOR_STATUS = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_STATUS, Content.PROP_VALUE, Content.PROP_SELECTION};
+
+	// Acoustic Content accessor for the location element value
+	private static final String[] ACCESSOR_LATITUDE = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_LOCATION, Content.PROP_LATITUDE};
+
+	// Acoustic Content accessor for the latitude element value
+	private static final String[] ACCESSOR_LONGITUDE = new String[] {Content.PROP_ELEMENTS, Content.ELEMENT_LOCATION, Content.PROP_LONGITUDE};
+
 	private static final String EMPTY_STRING ="";
 	
+	/**
+	 * Transforms a acoustic content search result to a {@link BikeList} object
+	 */
 	public static CompletableFuture<BikeList> toBikeList(JsonObject searchResult) {
 		LOGGER.traceEntry(searchResult.encode());
 		BikeList result = new BikeList();
@@ -35,11 +55,17 @@ public class BikeTransformer {
 		return LOGGER.traceExit(CompletableFuture.completedFuture(result));
 	}
 
+	/**
+	 * Transforms a Acoustic Content content JSON object to a {@link Bike} object
+	 */
 	public static CompletableFuture<Bike> toBike(JsonObject bike) {
 		LOGGER.traceEntry(bike.encode());
 		return CompletableFuture.completedFuture(buildBike(bike));
 	}
 	
+	/*
+	 * Builds the bike bean from acoustic content JSON
+	 */
 	private static Bike buildBike(final JsonObject json) {
 		LOGGER.traceEntry();
 		final Bike result;
@@ -58,6 +84,10 @@ public class BikeTransformer {
 		return LOGGER.traceExit(result);
 	}
 
+	/**
+	 * Merges the data provided by a {@link Bike} object into a Acoustic Content content JSON
+	 * @return
+	 */
 	public static CompletableFuture<JsonObject> mergeBike(Bike newBike, JsonObject bike) {
 		try {
 			mergeProperty(bike, newBike.getName(), ACCESSOR_NAME);

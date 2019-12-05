@@ -18,6 +18,12 @@ import io.vertx.ext.web.client.predicate.ResponsePredicate;
 import io.vertx.ext.web.codec.BodyCodec;
 import myke.Config;
 
+/**
+ * Small wrapper around {@link io.vertx.core.http.HttpClient} that applies our configuration settings and error converters.
+ * 
+ * @author DieterBuehler
+ *
+ */
 public class HttpClient {
 	private static final Logger LOGGER = LogManager.getLogger(HttpClient.class);
 

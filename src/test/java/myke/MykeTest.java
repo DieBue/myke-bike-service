@@ -15,7 +15,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import myke.beans.bikes.BikeSchema;
+import myke.beans.bikes.Bike;
+import myke.beans.bikes.BikeList;
 
 
 
@@ -62,11 +63,11 @@ public class MykeTest {
 	public void testBikes() throws TestException, IOException, SAXException {
 		JsonObject bikes = HttpUnitTestHelper.getUrlAsJsonObject(baseURL + "/api/bikes/by_user?user_id=Dieter", 200);
 		Assert.assertNotNull(bikes);
-		JsonArray ar = bikes.getJsonArray(BikeSchema.BikeList.PROP_ITEMS);
+		JsonArray ar = bikes.getJsonArray(BikeList.PROP_ITEMS);
 		Assert.assertTrue(ar.size()>0);
 		JsonObject bike0 = ar.getJsonObject(0);
-		Assert.assertNotNull(bike0.getString(BikeSchema.Bike.PROP_NAME));
-		Assert.assertNotNull(bike0.getString(BikeSchema.Bike.PROP_STATUS));
+		Assert.assertNotNull(bike0.getString(Bike.PROP_NAME));
+		Assert.assertNotNull(bike0.getString(Bike.PROP_STATUS));
 	}
 
 	/**
@@ -80,8 +81,8 @@ public class MykeTest {
 		// load a bike and verify data
 		JsonObject bike = HttpUnitTestHelper.getUrlAsJsonObject(baseURL + "/api/bikes/be6e1fa8-fc02-47e4-993c-e259525cd474", 200);
 		Assert.assertNotNull(bike);
-		Assert.assertEquals("Bike 1", bike.getString(BikeSchema.Bike.PROP_NAME));
-		Assert.assertTrue(Arrays.asList(new String[] {"FREE", "BOOKED"}).contains(bike.getString(BikeSchema.Bike.PROP_STATUS)));
+		Assert.assertEquals("Bike 1", bike.getString(Bike.PROP_NAME));
+		Assert.assertTrue(Arrays.asList(new String[] {Bike.Status.FREE.toString(), Bike.Status.BOOKED.toString()}).contains(bike.getString(Bike.PROP_STATUS)));
 	}
 
 	/**
@@ -99,30 +100,30 @@ public class MykeTest {
 		Assert.assertNotNull(bike);
 		
 		// keep track of current properties
-		String initialStatus = bike.getString(BikeSchema.Bike.PROP_STATUS);
-		String name = bike.getString(BikeSchema.Bike.PROP_NAME);
-		Double lat = bike.getDouble(BikeSchema.Bike.PROP_LATITUDE);
-		Double lon = bike.getDouble(BikeSchema.Bike.PROP_LONGITUDE);
+		String initialStatus = bike.getString(Bike.PROP_STATUS);
+		String name = bike.getString(Bike.PROP_NAME);
+		Double lat = bike.getDouble(Bike.PROP_LATITUDE);
+		Double lon = bike.getDouble(Bike.PROP_LONGITUDE);
 		Assert.assertNotNull(lat);
 		Assert.assertNotNull(lon);
 
 		// toggle the status and owner
-		String newStatus =  "FREE".equals(initialStatus) ? "BOOKED" : "FREE";
-		String newOwner = 		"FREE".equals(initialStatus) ? "Test" : "";
-		bike.put(BikeSchema.Bike.PROP_STATUS, newStatus);
-		bike.put(BikeSchema.Bike.PROP_OWNER, newOwner);
+		String newStatus =  Bike.Status.FREE.toString().equals(initialStatus) ? Bike.Status.BOOKED.toString() : Bike.Status.FREE.toString();
+		String newOwner = 	Bike.Status.FREE.toString().equals(initialStatus) ? "Test" : "";
+		bike.put(Bike.PROP_STATUS, newStatus);
+		bike.put(Bike.PROP_OWNER, newOwner);
 
 		// Put the updated bike
 		HttpUnitTestHelper.putJson(bike, route, 200);
 
 		// make sure status is new and the rest untouched
 		JsonObject updatedBike = HttpUnitTestHelper.getUrlAsJsonObject(route, 200);
-		Assert.assertEquals(name, updatedBike.getString(BikeSchema.Bike.PROP_NAME));
-		Assert.assertEquals(newOwner, updatedBike.getString(BikeSchema.Bike.PROP_OWNER));
-		Assert.assertEquals(lat, updatedBike.getDouble(BikeSchema.Bike.PROP_LATITUDE));
-		Assert.assertEquals(lon, updatedBike.getDouble(BikeSchema.Bike.PROP_LONGITUDE));
+		Assert.assertEquals(name, updatedBike.getString(Bike.PROP_NAME));
+		Assert.assertEquals(newOwner, updatedBike.getString(Bike.PROP_OWNER));
+		Assert.assertEquals(lat, updatedBike.getDouble(Bike.PROP_LATITUDE));
+		Assert.assertEquals(lon, updatedBike.getDouble(Bike.PROP_LONGITUDE));
 		
-		Assert.assertEquals(newStatus, updatedBike.getString(BikeSchema.Bike.PROP_STATUS));
+		Assert.assertEquals(newStatus, updatedBike.getString(Bike.PROP_STATUS));
 	}
 	
 	/**

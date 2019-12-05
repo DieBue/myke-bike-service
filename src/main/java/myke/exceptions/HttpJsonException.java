@@ -4,9 +4,6 @@ import io.vertx.core.json.JsonObject;
 
 public class HttpJsonException extends BaseException implements JsonMessageProvider {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private final JsonObject jsonMessage;

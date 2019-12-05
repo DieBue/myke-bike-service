@@ -27,7 +27,6 @@ public class JsonUtils {
 	@SuppressWarnings("unchecked")
 	public static <T> T get(final JsonObject jsonObject, final T defaultValue, final String... path) {
 		LOGGER.traceEntry("json: {}, default: {}, path: {}", jsonObject, defaultValue, Arrays.toString(path));
-		LOGGER.debug("what ????");
 		Object current = jsonObject;
 		for (String name : path) {
 			if ((current != null) && (current instanceof JsonObject)) {
