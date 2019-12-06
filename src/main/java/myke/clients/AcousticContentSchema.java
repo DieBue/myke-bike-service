@@ -27,6 +27,7 @@ public class AcousticContentSchema {
 		public static final String PROP_SELECTION = "selection";
 		public static final String PROP_LATITUDE = "latitude";
 		public static final String PROP_LONGITUDE = "longitude";
+		public static final String PROP_TAGS = "tags";
 		
 		public static final String ELEMENT_NAME = "bikeName";
 		public static final String ELEMENT_LOCATION = "location";

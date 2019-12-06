@@ -24,6 +24,9 @@ public class AcousticContentClient extends HttpClient {
 	// Search on published content
 	private static final String ROUTE_DELIVERY_SEARCH = "/delivery/v1/search";
 
+	// Search on published content
+	private static final String ROUTE_AUTHORING_SEARCH = "/authoring/v1/search";
+
 	// Load content item
 	private static final String ROUTE_AUTHORING_CONTENT = "/authoring/v1/content/";
 
@@ -52,6 +55,19 @@ public class AcousticContentClient extends HttpClient {
 	public CompletableFuture<JsonObject> search(String... params) {
 		try {
 			return getAsJsonObject(buildUrl(ROUTE_DELIVERY_SEARCH, params), null, null);
+		} catch (URISyntaxException e) {
+			// should never happen
+			return getFailedFuture(e);
+		}
+	}
+
+	/**
+	 * Performs a search on authoring content (potentially not yet published).
+	 * @param params Query parameters as defined by the Acoustic Content search API 
+	 */
+	public CompletableFuture<JsonObject> searchAuthoring(String... params) {
+		try {
+			return getAsJsonObject(buildUrl(ROUTE_AUTHORING_SEARCH, params), HEADER_AUTHORIZATION, authHeader);
 		} catch (URISyntaxException e) {
 			// should never happen
 			return getFailedFuture(e);

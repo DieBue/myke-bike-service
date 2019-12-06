@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,6 +29,7 @@ import myke.beans.bikes.BikeList;
  *
  */
 public class MykeTest {
+	private static final Logger LOGGER = LogManager.getLogger(MykeTest.class);
 
 	private static Vertx vertx = Vertx.vertx(new VertxOptions().setBlockedThreadCheckInterval(1000*10));
 	private static Service service;
@@ -152,31 +155,34 @@ public class MykeTest {
 		String route2 = baseURL + "/api/bikes/" + BIKE_2;
 		
 		// make sure user testOneBikePerUserEnforcement is not owning any bike
-		BikeList bikeList = new BikeList(HttpUnitTestHelper.getUrlAsJsonObject(baseURL + "/api/bikes/by_user?user_id=" + USER, 200));
-		Bike bikeToGiveBack = null;
-		for (int i=0; i<bikeList.size(); i++) {
-			Bike bike = bikeList.get(i);
-			if (USER.equals(bike.getOwner())) {
-				if (bikeToGiveBack != null) {
-					Assert.fail("User " + USER + " ownes more than one bike. This should never happen");
-				}
-				bikeToGiveBack = bike;
-			}
-		}
-
+		Bike bikeToGiveBack = getOwnedBike(USER);
+		
 		// in case we already own a bike, we give it back to have a defined starting point ....
 		if (bikeToGiveBack != null) {
+			LOGGER.trace("Bike to give back: " + bikeToGiveBack);
 			updateStatus(bikeToGiveBack, Status.FREE, null, 200);
 		}
 
-		// now we claim bike1 - this should succeed
+		// Make sure bike 1 and 2 are not owned by somebody else:
 		Bike bike1 = new Bike(HttpUnitTestHelper.getUrlAsJsonObject(route1, 200));
-		Assert.assertEquals(bike1.getStatus(), Status.FREE);
+		if (!Status.FREE.equals(bike1.getStatus())) {
+			updateStatus(bike1, Status.FREE, null, 200);
+		}
+		Bike bike2 = new Bike(HttpUnitTestHelper.getUrlAsJsonObject(route2, 200));
+		if (!Status.FREE.equals(bike2.getStatus())) {
+			updateStatus(bike2, Status.FREE, null, 200);
+		}
+		
+		// now we know that the user does not own any bikes and bike 1 and 2 are free
+		bike1 = new Bike(HttpUnitTestHelper.getUrlAsJsonObject(route1, 200));
+		Assert.assertEquals(Status.FREE, bike1.getStatus());
+		bike2 = new Bike(HttpUnitTestHelper.getUrlAsJsonObject(route2, 200));
+		Assert.assertEquals(Status.FREE, bike2.getStatus());
+		
+		// Now the user books bike 1 - this should succeed
 		updateStatus(bike1, Status.BOOKED, USER, 200);
 
-		// now we try to claim bike2 - this should fail with 403
-		Bike bike2 = new Bike(HttpUnitTestHelper.getUrlAsJsonObject(route2, 200));
-		Assert.assertEquals(bike2.getStatus(), Status.FREE);
+		// Now the user tries to books bike 2 - this should fail
 		updateStatus(bike2, Status.BOOKED, USER, 403);
 		
 		// expected final state: bike1 is booked bike 2 is free
@@ -195,11 +201,12 @@ public class MykeTest {
 	@Test
 	public void test404() throws TestException, IOException, SAXException {
 		String route = baseURL + "/api/bikes/whatever";
-		// mkae sure we get a 404
+		// make sure we get a 404 for a non existing bike
 		HttpUnitTestHelper.getUrlAsJsonObject(route, 404);
 	}
 	
 	private String updateStatus(JsonObject bikeJson, Status status, String user, int expectedResponseCode) throws IOException, SAXException, TestException {
+		LOGGER.traceEntry("bike: {}, new status {}, user {}", bikeJson, status, user);
 		if (Status.FREE.equals(status)) {
 			bikeJson.put(Bike.PROP_STATUS, Status.FREE.toString());
 			bikeJson.put(Bike.PROP_OWNER, "");
@@ -208,10 +215,27 @@ public class MykeTest {
 			bikeJson.put(Bike.PROP_STATUS, Status.BOOKED.toString());
 			bikeJson.put(Bike.PROP_OWNER, user);
 		}
-		return HttpUnitTestHelper.putJson(bikeJson, baseURL + "/api/bikes/" + bikeJson.getString("id"), expectedResponseCode);
+		String res = HttpUnitTestHelper.putJson(bikeJson, baseURL + "/api/bikes/" + bikeJson.getString("id"), expectedResponseCode);
+		return LOGGER.traceExit(res);
 	}
 
 	private String updateStatus(Bike bike, Status status, String user, int expectedResponseCode) throws IOException, SAXException, TestException {
 		return (updateStatus(bike.getJson(), status, user, expectedResponseCode));
+	}
+
+	private Bike getOwnedBike(String user) throws TestException, IOException, SAXException {
+		LOGGER.traceEntry(user);
+		Bike result = null;
+		BikeList bikeList = new BikeList(HttpUnitTestHelper.getUrlAsJsonObject(baseURL + "/api/bikes/by_user?user_id=" + user, 200));
+		for (int i=0; i<bikeList.size(); i++) {
+			Bike bike = bikeList.get(i);
+			if (user.equals(bike.getOwner())) {
+				if (result != null) {
+					throw new IllegalStateException("User " + user + " ownes more than one bike. This should never happen");
+				}
+				result = bike;
+			}
+		}
+		return LOGGER.traceExit(result);
 	}
 }

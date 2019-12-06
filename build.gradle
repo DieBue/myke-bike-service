@@ -10,24 +10,27 @@ repositories {
   }
 }
 
-version = '3.8.4'
+version = '0.0.1'
 sourceCompatibility = '1.8'
 mainClassName = 'myke.Main'
 
+ext {
+	vertxVersion = '3.8.4'
+}
+
 dependencies {
-    compile 'org.apache.logging.log4j:log4j-jul:2.8.+',
-            'org.apache.logging.log4j:log4j-1.2-api:2.8.+',
-            'commons-io:commons-io:2.4',
-            'org.apache.httpcomponents:httpclient:4.5.7',
-			'commons-lang:commons-lang:2.6',
-			'org.apache.commons:commons-pool2:2.0',
-			'io.vertx:vertx-core:3.8.4' , 
-			'io.vertx:vertx-web:3.8.4',
-			'io.vertx:vertx-web-client:3.8.4'
+    compile "org.apache.logging.log4j:log4j-jul:2.8.+",
+            "org.apache.logging.log4j:log4j-1.2-api:2.8.+",
+            "commons-io:commons-io:2.4",
+            "org.apache.httpcomponents:httpclient:4.5.7",
+			"commons-lang:commons-lang:2.6",
+			"io.vertx:vertx-core:$vertxVersion" , 
+			"io.vertx:vertx-web:$vertxVersion",
+			"io.vertx:vertx-web-client:$vertxVersion"
 			
-	testCompile 'junit:junit:4.12',
+	testCompile "junit:junit:4.12",
 	            "httpunit:httpunit:1.7",
-                'io.vertx:vertx-unit:3.8.4'
+                "io.vertx:vertx-unit:$vertxVersion"
 			
 }
 

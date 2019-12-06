@@ -90,11 +90,11 @@ public class BikeTransformer {
 	 */
 	public static CompletableFuture<JsonObject> mergeBike(Bike newBike, JsonObject bike) {
 		try {
-			mergeProperty(bike, newBike.getName(), ACCESSOR_NAME);
-			mergeProperty(bike, newBike.getOwner(), ACCESSOR_OWNER);
-			mergeProperty(bike, newBike.getStatus(), ACCESSOR_STATUS);
-			mergeProperty(bike, newBike.getLatitude(), ACCESSOR_LATITUDE);
-			mergeProperty(bike, newBike.getLongitude(), ACCESSOR_LONGITUDE);
+			mergeProperty(bike, newBike.getName(), ACCESSOR_NAME, false);
+			mergeProperty(bike, newBike.getOwner(), ACCESSOR_OWNER, true);
+			mergeProperty(bike, newBike.getStatus(), ACCESSOR_STATUS, false);
+			mergeProperty(bike, newBike.getLatitude(), ACCESSOR_LATITUDE, false);
+			mergeProperty(bike, newBike.getLongitude(), ACCESSOR_LONGITUDE, false);
 		} catch (JsonAccessException e) {
 			CompletableFuture<JsonObject> failed = new CompletableFuture<JsonObject>();
 			failed.completeExceptionally(e);
@@ -103,12 +103,26 @@ public class BikeTransformer {
 		return CompletableFuture.completedFuture(bike);
 	}
 	
-	private static void mergeProperty(JsonObject json, Object value, String[] accessor) throws JsonAccessException {
+	/**
+	 * Sets the value in the Acoustic Content JSON object.
+	 * @param updateTag Set this flag if the value shall also be added as a tag to the content item. This allows to use this value for searching 
+	 * in authoring content.
+	 * 
+	 * @throws JsonAccessException
+	 */
+	private static void mergeProperty(JsonObject json, Object value, String[] accessor, boolean updateTag) throws JsonAccessException {
 		if ((value == null) || (EMPTY_STRING.equals(value))) {
 			JsonUtils.remove(json, accessor);
+			if (updateTag) {
+				json.put(Content.PROP_TAGS, new JsonArray());
+			}
+			
 		}
 		else {
 			JsonUtils.put(json, value, accessor);
+			if (updateTag) {
+				json.put(Content.PROP_TAGS, new JsonArray().add(value));
+			}
 		}
 	}
 	

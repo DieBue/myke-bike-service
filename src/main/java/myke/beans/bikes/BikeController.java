@@ -43,7 +43,7 @@ public class BikeController {
 	/**
 	 * Acoustic content search API query template to load all bikes owned by a given user.
 	 */
-	private static final String QUERY_OWNED_BIKES = QUERY_FRAGMENT_BIKES + "AND string1:{0}"; 
+	private static final String QUERY_OWNED_BIKES_IN_AUTHORING = QUERY_FRAGMENT_BIKES + "AND tags:{0}"; 
 	
 	private AcousticContentClient client;
 
@@ -83,6 +83,15 @@ public class BikeController {
 	 */
 	private CompletableFuture<BikeList> getBikes(String query) {
 		return client.search(Search.FIELD_QUERY, query, Search.FIELD_FORMAT, Search.VALUE_FORMAT_DOCUMENT, Search.FIELD_SEED, Long.toString(System.currentTimeMillis())).thenCompose(BikeTransformer::toBikeList);
+
+	}
+	/*
+	 * Load bikes from authoring system based on a query string 
+	 * @param query the query string
+	 * @return
+	 */
+	private CompletableFuture<BikeList> getBikesFromAuthoring(String query) {
+		return client.searchAuthoring(Search.FIELD_QUERY, query, Search.FIELD_FORMAT, Search.VALUE_FORMAT_DOCUMENT, Search.FIELD_SEED, Long.toString(System.currentTimeMillis())).thenCompose(BikeTransformer::toBikeList);
 	}
 	
 	/**
@@ -113,9 +122,9 @@ public class BikeController {
 		if(Bike.Status.BOOKED.equals(newBike.getStatus())) {
 			String userId = newBike.getOwner();
 			if ((userId != null) && (!userId.isEmpty())){
-				String query = MessageFormat.format(QUERY_OWNED_BIKES, userId);
+				String query = MessageFormat.format(QUERY_OWNED_BIKES_IN_AUTHORING, userId);
 				LOGGER.trace("query: " + query);
-				getBikes(query).thenAccept(ownedBikes -> {
+				getBikesFromAuthoring(query).thenAccept(ownedBikes -> {
 					int numFound = ownedBikes.size(); 
 					if (numFound == 0) {
 						LOGGER.traceEntry("success (user does not own any bikes)");
