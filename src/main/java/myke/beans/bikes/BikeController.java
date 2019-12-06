@@ -82,7 +82,7 @@ public class BikeController {
 	 * @return
 	 */
 	private CompletableFuture<BikeList> getBikes(String query) {
-		return client.search(Search.FIELD_QUERY, query, Search.FIELD_FORMAT, Search.VALUE_FORMAT_DOCUMENT, Search.FIELD_SEED, Long.toString(System.currentTimeMillis())).thenCompose(BikeTransformer::toBikeList);
+		return client.search(Search.PARAM_QUERY, query, Search.PARAM_FORMAT, Search.VALUE_FORMAT_DOCUMENT, Search.PARAM_ROWS, Integer.toString(50), Search.PARAM_SEED, Long.toString(System.currentTimeMillis())).thenCompose(BikeTransformer::toBikeList);
 
 	}
 	/*
@@ -91,7 +91,7 @@ public class BikeController {
 	 * @return
 	 */
 	private CompletableFuture<BikeList> getBikesFromAuthoring(String query) {
-		return client.searchAuthoring(Search.FIELD_QUERY, query, Search.FIELD_FORMAT, Search.VALUE_FORMAT_DOCUMENT, Search.FIELD_SEED, Long.toString(System.currentTimeMillis())).thenCompose(BikeTransformer::toBikeList);
+		return client.searchAuthoring(Search.PARAM_QUERY, query, Search.PARAM_FORMAT, Search.VALUE_FORMAT_DOCUMENT, Search.PARAM_SEED, Long.toString(System.currentTimeMillis())).thenCompose(BikeTransformer::toBikeList);
 	}
 	
 	/**

@@ -7,10 +7,11 @@ package myke.clients;
  */
 public class AcousticContentSchema {
 	public static final class Search {
-		public static final String FIELD_QUERY = "q";
-		public static final String FIELD_FILTER = "fq";
-		public static final String FIELD_FORMAT = "fl";
-		public static final String FIELD_SEED = "ts";
+		public static final String PARAM_QUERY = "q";
+		public static final String PARAM_FILTER = "fq";
+		public static final String PARAM_FORMAT = "fl";
+		public static final String PARAM_ROWS = "rows";
+		public static final String PARAM_SEED = "ts";
 		public static final String VALUE_FORMAT_DOCUMENT = "document:[json]";
 	}
 
