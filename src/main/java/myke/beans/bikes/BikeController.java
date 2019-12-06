@@ -10,9 +10,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import myke.beans.bikes.Bike.Status;
 import myke.clients.AcousticContentClient;
-import myke.clients.AcousticContentSchema.Content;
 import myke.clients.AcousticContentSchema.Search;
-import myke.clients.AcousticContentSchema.SearchResult;
 import myke.exceptions.CannotRentMultipleBikesException;
 import myke.exceptions.InvalidPayloadException;
 
@@ -117,21 +115,21 @@ public class BikeController {
 			if ((userId != null) && (!userId.isEmpty())){
 				String query = MessageFormat.format(QUERY_OWNED_BIKES, userId);
 				LOGGER.trace("query: " + query);
-				client.search(Search.FIELD_QUERY, query).thenAccept(ownedBikes -> {
-					int numFound = ownedBikes.getInteger(SearchResult.PROP_NUM_FOUND); 
+				getBikes(query).thenAccept(ownedBikes -> {
+					int numFound = ownedBikes.size(); 
 					if (numFound == 0) {
 						LOGGER.traceEntry("success (user does not own any bikes)");
 						result.complete(currentBike);
 					}
 					else {
-						JsonObject firstOwnedBike = ownedBikes.getJsonArray(SearchResult.PROP_DOCUMENTS).getJsonObject(0);
-						if ((numFound == 1) && (firstOwnedBike.getString(Content.PROP_ID).equals(newBike.getId()))) {
+						Bike firstOwnedBike = ownedBikes.get(0);
+						if ((numFound == 1) && (firstOwnedBike.getId().equals(newBike.getId()))) {
 							LOGGER.traceEntry("success (The user already ownes the updated bike)");
 							result.complete(currentBike);
 						}
 						else {
 							LOGGER.traceEntry("fail (The user already ownes at least one more bike)");
-							result.completeExceptionally(new CannotRentMultipleBikesException(firstOwnedBike.getString(Content.PROP_ID)));
+							result.completeExceptionally(new CannotRentMultipleBikesException(firstOwnedBike.getId()));
 						}
 					}
 				}).exceptionally(th -> {

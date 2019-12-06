@@ -41,6 +41,10 @@ public class BikeList extends JsonBean {
 		return new Bike(getOrCreateItemsArray().getJsonObject(index));
 	}
 	
+	public int size() {
+		return getOrCreateItemsArray().size(); 
+	}
+	
 	/**
 	 * Adds a bike to this BikeList
 	 */

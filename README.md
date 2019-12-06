@@ -25,7 +25,8 @@ Myke also provides a react UI that you will find here: https://github.com/DieBue
 ## Try the server
 When the server is running, you should see the REST API documentation being served at http://localhost:3001/swagger/. You can invoke the APIs using the
 `Try it out` button as usual.
-The test cases can be executed either using `gradlew test`. 
+The test cases can be executed either using `gradlew test`. The tests are defined in class `myke.MykeTest`.
 
 ## Try the UI
-Leave the service running and install the Myke UI as documented here https://github.com/DieBue/myke-ui.      
+Leave the service running and install the Myke UI as documented here https://github.com/DieBue/myke-ui.
+

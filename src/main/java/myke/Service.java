@@ -164,8 +164,8 @@ public class Service extends AbstractVerticle {
 		try {
 			String bikeId = validateParam(ctx, API_PARAM_BIKE_ID);
 			JsonObject bike = ctx.getBodyAsJson();
-			validateParamValue(bikeId, bike.getString(AcousticContentSchema.Content.PROP_ID));
 			LOGGER.trace("Posted body: " + bike.encode());
+			validateParamValue(bikeId, bike.getString(AcousticContentSchema.Content.PROP_ID));
 			CompletableFuture<Bike> bikeFuture = bikeController.updateBike(new Bike(bike));
 			bikeFuture.whenComplete((updatedBike, th) -> {
 				if (th != null) {
