@@ -1,5 +1,8 @@
 package myke.exceptions;
 
+/**
+ * A provided API parameter does not have the expected value.
+ */
 import java.text.MessageFormat;
 
 public class ParamValueMissmatchException extends BaseException implements HttpStatusProvider {

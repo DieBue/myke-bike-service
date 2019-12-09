@@ -36,8 +36,17 @@ public class HttpClient {
 	protected final Config config;
 	private final String baseUrl;
 	
+	/**
+	 *  The default success predicate that leverages a {@link DefaultErrorConverter} to capture error messages sent by the downstream service.
+	 */
 	private static final ResponsePredicate SUCCESS = ResponsePredicate.create(ResponsePredicate.SC_SUCCESS, DefaultErrorConverter.INSTANCE);
 	
+	/**
+	 * Create this client
+	 * @param vertx The vertx instance
+	 * @param config The configuration
+	 * @param baseUrl The base URL
+	 */
 	public HttpClient(Vertx vertx, Config config, String baseUrl) {
 		this.config = config;
 		this.baseUrl = baseUrl;
@@ -45,6 +54,12 @@ public class HttpClient {
 	}
 	
 	
+	/**
+	 * Builds a absolute URLs based on your configured base URL.
+	 * @param route The API route 
+	 * @param queryParams URL query parameters 
+	 * @return A future on the resulting URI. 
+	 */
 	protected CompletableFuture<URI> buildUrl(String route, String... queryParams) {
 		CompletableFuture<URI> result = new CompletableFuture<>();
 		try {
@@ -66,20 +81,28 @@ public class HttpClient {
 		return result;
 	}
 
+	/**
+	 * Loads the data from the given URL and transforms it into a JSON object
+	 * 
+	 * @return A future on the loaded JSON object
+	 */
 	protected CompletableFuture<JsonObject> getAsJsonObject(URI url) {
 		return getAsJsonObject(url, null);
 	}
+
+	/**
+	 * Loads the data from the given URL and transforms it into a JSON object
+	 * 
+	 * @param cookies Additional cookies to be attached to the out-bound request
+ 	 * @return A future on the loaded JSON object
+	 */
 	protected CompletableFuture<JsonObject> getAsJsonObject(URI url, List<Cookie> cookies) {
 		LOGGER.debug("url: {}", url);
 		CompletableFuture<JsonObject> result = new CompletableFuture<>();
 		HttpRequest<JsonObject> request = client.get(443, config.getHost(), url.toString())
 		.as(BodyCodec.jsonObject())
 		.expect(SUCCESS);
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				request.putHeader(HEADER_COOKIE, cookie.encode());
-			}
-		}
+		addCookies(cookies, request);
 		request.send(asyncResult -> {
 			if (asyncResult.succeeded()) {
 				HttpResponse<JsonObject> response = asyncResult.result();
@@ -94,21 +117,26 @@ public class HttpClient {
 		return result;
 	}
 
+	/**
+	 * Passes the provided JSON object to the given URL using a PUT request, reads the response and turns it into a JSON object. 
+	 * @return A future on the updated loaded JSON object
+	 */
 	protected CompletableFuture<JsonObject> putJsonObject(URI url, JsonObject json) {
 		return putJsonObject(url, json, null);
 	}
 
+	/**
+	 * Passes the provided JSON object to the given URL using a PUT request, reads the response and turns it into a JSON object.
+	 * @param cookies Additional cookies to be added to the out-bound request 
+	 * @return A future on the updated loaded JSON object
+	 */
 	protected CompletableFuture<JsonObject> putJsonObject(URI url, JsonObject json, List<Cookie> cookies) {
 		LOGGER.debug("url: {}, json: {}", url, json);
 		CompletableFuture<JsonObject> result = new CompletableFuture<>();
 		HttpRequest<JsonObject> request = client.put(443, config.getHost(), url.toString())
 		.as(BodyCodec.jsonObject())
 		.expect(SUCCESS);
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				request.putHeader("Cookie", cookie.encode());
-			}
-		}
+		addCookies(cookies, request);
 		
 		request.sendJsonObject(json, asyncResult -> {
 			if (asyncResult.succeeded()) {
@@ -125,6 +153,12 @@ public class HttpClient {
 		return result;
 	}
 
+	/**
+	 * Performs a POST operation on a given URL 
+	 * @param headerName The name of an additional header to be added to the out-bound request
+	 * @param headerValue The value of an additional header to be added to the out-bound request
+	 * @return A future on response object
+	 */
 	public CompletableFuture<HttpResponse<Buffer>> post(URI url, String headerName, String headerValue) {
 		LOGGER.debug("url: {}", url);
 		CompletableFuture<HttpResponse<Buffer>> result = new CompletableFuture<>();
@@ -146,5 +180,18 @@ public class HttpClient {
 			}
 		});
 		return result;
+	}
+
+	/**
+	 * Adds the provided cookies to the request object
+	 * @param cookies
+	 * @param request
+	 */
+	private void addCookies(List<Cookie> cookies, HttpRequest<JsonObject> request) {
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				request.putHeader(HEADER_COOKIE, cookie.encode());
+			}
+		}
 	}
 }

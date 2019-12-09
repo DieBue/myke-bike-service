@@ -3,7 +3,7 @@ swagger: '2.0'
 info:
   version: 0.0.1
   title: My Bike - Bike Service (Prototype)
-  description: This service provides read and update access to bikes. Bikes have location, status and owner information. Status can be one of `FREE`, `booked` and `UNAVAILABLE`. 
+  description: This service provides read and update access to bikes. Bikes have location, status and owner information. Status can be one of `FREE`, `BOOKED` and `UNAVAILABLE`. 
     Bikes in status `BOOKED` identify the owning user via the owener information. Users cannot own more than on bike at any given point in time.
 basePath: /api
 paths:

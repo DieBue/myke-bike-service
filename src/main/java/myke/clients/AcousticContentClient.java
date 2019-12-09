@@ -47,8 +47,13 @@ public class AcousticContentClient extends HttpClient {
 	// The API key won't time out so we cache the authorization header in this value
 	private final String authorizationHeaderValue;
 
-	private static final int CACHE_TIME_IN_SECONDS = 60 * 20;
+	// Cache time for the authentication cookies. We cache 20 minutes which is guaranteed to the be shorter than the authentication cookie expiration time.
+	private static final int AUTHENTICATION_CACHE_TIME_IN_SECONDS = 60 * 20;
+	
+	// Cache authentication cookies
 	private CompletableFuture<List<Cookie>> cachedAuthenticationCookies;
+
+	// Time stamp to handle cache expiration
 	private Instant nextExpiration = Instant.now();
 
 	/**
@@ -107,14 +112,14 @@ public class AcousticContentClient extends HttpClient {
 	}
 
 	/**
-	 * Go gets the login cookies from cache. If the cache expired, new login cookies will be obtained from the backend.
+	 * Go gets the login cookies from cache. If the cache is empty or expired, new login cookies will be obtained from the back-end.
 	 * 
 	 */
 	private CompletableFuture<List<Cookie>> getLoginCookiesWithCache() {
 		if (Instant.now().isAfter(nextExpiration) || (cachedAuthenticationCookies == null)) {
 			LOGGER.trace("Performing login ...");
 			cachedAuthenticationCookies = getLoginCookies();
-			nextExpiration = Instant.now().plusSeconds(CACHE_TIME_IN_SECONDS);
+			nextExpiration = Instant.now().plusSeconds(AUTHENTICATION_CACHE_TIME_IN_SECONDS);
 		} else {
 			LOGGER.trace("Using cookies from cache.");
 		}
@@ -123,7 +128,7 @@ public class AcousticContentClient extends HttpClient {
 	}
 
 	/**
-	 * Loads new login cookies from the backend by calling the login API
+	 * Loads new login cookies from the back-end by calling the login API
 	 */
 	public CompletableFuture<List<Cookie>> getLoginCookies() {
 		return buildUrl(ROUTE_LOGIN, LOGIN_PARAMS).thenCompose(url -> {
@@ -139,6 +144,9 @@ public class AcousticContentClient extends HttpClient {
 		});
 	}
 
+	/*
+	 * Helper method to build a Cookie object from a Set-Cookie header
+	 */
 	private void addCookie(ArrayList<Cookie> result, String cookieHeader) {
 		LOGGER.traceEntry(cookieHeader);
 		if (cookieHeader != null) {

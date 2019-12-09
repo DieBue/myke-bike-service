@@ -2,6 +2,11 @@ package myke.exceptions;
 
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Base exception for exceptions that provide a JSON error message
+ * @author DieterBuehler
+ *
+ */
 public class HttpJsonException extends BaseException implements JsonMessageProvider {
 
 	private static final long serialVersionUID = 1L;

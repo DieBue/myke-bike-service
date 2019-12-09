@@ -6,6 +6,9 @@ package myke.clients;
  *
  */
 public class AcousticContentSchema {
+	/**
+	 * Search API
+	 */
 	public static final class Search {
 		public static final String PARAM_QUERY = "q";
 		public static final String PARAM_FILTER = "fq";
@@ -15,12 +18,18 @@ public class AcousticContentSchema {
 		public static final String VALUE_FORMAT_DOCUMENT = "document:[json]";
 	}
 
+	/**
+	 * Search result schema constants
+	 */
 	public static final class SearchResult {
 		public static final String PROP_DOCUMENTS = "documents";
 		public static final String PROP_DOCUMENT = "document";
 		public static final String PROP_NUM_FOUND = "numFound";
 	}
 
+	/**
+	 * Content schema constants
+	 */
 	public static final class Content {
 		public static final String PROP_ID = "id";
 		public static final String PROP_ELEMENTS = "elements";

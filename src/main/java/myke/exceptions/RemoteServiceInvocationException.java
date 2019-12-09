@@ -1,5 +1,8 @@
 package myke.exceptions;
 
+/**
+ * Invoking a remote API did fail.
+ */
 import io.vertx.core.json.JsonObject;
 
 public class RemoteServiceInvocationException extends HttpJsonException {
