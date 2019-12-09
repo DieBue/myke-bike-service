@@ -4,7 +4,12 @@ As a result, the final service would be well suited to be containerized/orchestr
 
 Myke also provides a react UI that you will find here: https://github.com/DieBue/myke-ui .
 
+
 # Install
+The following subsections provide a step-by-step documentation on how to build and run the prototype. 
+In case you run into problems, you could consider having a quick look a short screen recording of the install procedure uploaded here:
+https://github.com/DieBue/myke-bike-service/blob/master/install.mp4 
+  
 ## Prereqs
 - You need to have Java JDK verion 8 or higher installed on your machine
 - Internet access
