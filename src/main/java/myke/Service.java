@@ -79,9 +79,12 @@ public class Service extends AbstractVerticle {
 
 		router.route().handler(getCorsHandler());
 		router.get(API_ROUTE_GET_BIKES_BY_USER).handler(this::handleGetBikesByUser);
+
 		router.get(API_ROUTE_GET_BIKE).handler(this::handleGetBike);
+
 		router.put(API_ROUTE_PUT_BIKE).handler(BodyHandler.create());
 		router.put(API_ROUTE_PUT_BIKE).handler(this::handlePutBike);
+
 		router.route(API_ROUTE_API_DOC).handler(StaticHandler.create());
 		server.requestHandler(router::accept);
 		server.listen(config.getServerPort(), res -> {
