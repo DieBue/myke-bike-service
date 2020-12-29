@@ -35,3 +35,5 @@ The test cases can be executed either using `gradlew test`. The tests are define
 ## Try the UI
 Leave the service running and install the Myke UI as documented here https://github.com/DieBue/myke-ui.
 
+End of document
+
